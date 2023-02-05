@@ -1,14 +1,20 @@
 import { Request, Response } from 'express'
 import { insert } from '../../../../database'
-import { User } from '../../../../types/User'
+import { register } from '../../../../auth'
 
-export const get = (_req: Request, res: Response) => {
-	const user = <User>_req.body
+interface RegisterPayload {
+	name: string;
+	bot: boolean;
+	password: string;
+}
+
+export const post = (_req: Request, res: Response) => {
+	const data = <RegisterPayload>_req.body
 
 	if (
-		!user.name ||
-		!user.pubkey ||
-		!user.type
+		!data.name ||
+		data.bot == undefined ||
+		!data.password
 	) {
 		res.status(400).json({
 			error: 'Not enough data'
@@ -16,8 +22,12 @@ export const get = (_req: Request, res: Response) => {
 		return
 	}
 
-	insert('Users', user)
+	insert('Users', {
+		name: data.name,
+		bot: data.bot
+	})
 		.then(user => {
+			register(user._id, data.password)
 			res.json(user)
 		})
 }

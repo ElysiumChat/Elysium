@@ -61,8 +61,8 @@ export const queryOne = (collection: string, query: Document) => {
 	})
 }
 
-export const insert = (collection: string, document: object) => {
-	return new Promise<object>((resolve, reject) => {
+export const insert = (collection: string, document: Document) => {
+	return new Promise<Document>((resolve, reject) => {
 		database.collection(collection).insertOne(document)
 			.then(() => {
 				resolve(document)
