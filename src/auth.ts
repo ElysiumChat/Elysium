@@ -71,7 +71,8 @@ export const set = (id: string, password: string) => {
 	})
 }
 
-export const validateToken = (token: string) => {
+export const validateToken = (token: string | undefined) => {
+	if(token == undefined)return undefined
 	return tokens.get(token)
 }
 

@@ -2,10 +2,10 @@ import http from 'http'
 import { readdir, readFile } from 'fs/promises'
 import express from 'express'
 import { FsRouter } from 'express-router-filesystem'
-import cors from 'cors'
 import { Server as WSS } from 'socket.io'
 import config from './config'
 import { PeerServer } from 'peer'
+import middleware from './middleware'
 
 const app = express()
 const server = http.createServer(app)
@@ -17,11 +17,7 @@ const wss = new WSS(server, {
 })
 PeerServer({ port: 9000, path: '/' })
 
-app.use(cors({
-	origin: config.cors
-}))
-
-app.use(express.json())
+middleware(app)
 
 app.get('/app', (_req, res) => {
 	readFile(__dirname + '/../client/index.html')
